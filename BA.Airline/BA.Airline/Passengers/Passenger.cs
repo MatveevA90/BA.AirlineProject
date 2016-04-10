@@ -15,7 +15,7 @@ namespace BA.Airline.Passengers
         public string Nationality { get; set; }
         public string NumberOfPassport { get; set; }
         public DateTime Birthday { get; set; }
-        Sex _sex;
+       
         public Sex Sex { get; set; }
 
 

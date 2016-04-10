@@ -9,6 +9,8 @@ namespace BA.Airline.Passengers
 {
     public interface IPassenger
     {
+        string Firstname { get; set; }
+        string Lastname { get; set; }
         string NumberOfPassport { get; set; }
         string ToString();
       

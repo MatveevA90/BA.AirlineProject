@@ -13,16 +13,18 @@ namespace BA.Airline.Flights
         int FlightNumber { get; set; }
         ITicket[] TicketsOfFlight { get; set; }
 
-        void PrintFlight();
+
         IFlight SearchByNumber(int numberOfFlight);
         IFlight DeletFlight(int numberOfFlight);
-        void EditFlight(int numberOfFlight);
-        void SearchByCost(decimal money);
-        IPassenger[] SearchByNameLastname();
-        IPassenger[] SearchByPassport();
+        void EditFlightArrivedDepartedStatus(int arrivedDepartedStatus);
+        void EditFlightNumberOfBusinessSeats(int numberOfSeats);
+        void EditFlightNumberOfEconomySeats(int numberOfSeats);
+        IFlight SearchByCost(decimal money);
+        IPassenger[] SearchByNameLastname(string name);
+        IPassenger SearchByPassport();
         IPassenger[] ShowPassengers();
         ITicket BuyTicket(IPassenger passenger);
-        ITicket RefuseFromTicket(IPassenger passenger);
+        ITicket RefuseFromTicket(int numberOfTicket);
         string ToString();
 
 
