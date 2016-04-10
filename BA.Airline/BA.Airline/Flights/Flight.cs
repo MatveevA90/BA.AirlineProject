@@ -190,7 +190,7 @@ namespace BA.Airline.Flights
                     {
                         passengers[i] = ticket.Passenger;
                         i++;
-                    } else if (ticket.Passenger.Lastname.Contains(name){
+                    } else if (ticket.Passenger.Lastname.Contains(name)){
                         passengers[i] = ticket.Passenger;
                         i++;
                     }

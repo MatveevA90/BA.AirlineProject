@@ -21,9 +21,9 @@ namespace BA.Airline.Flights
         void EditFlightNumberOfEconomySeats(int numberOfSeats);
         IFlight SearchByCost(decimal money);
         IPassenger[] SearchByNameLastname(string name);
-        IPassenger SearchByPassport();
+        IPassenger SearchByPassport(string numberOfPassport);
         IPassenger[] ShowPassengers();
-        ITicket BuyTicket(IPassenger passenger);
+        ITicket BuyTicket(IPassenger passenger, int numberOfSeat);
         ITicket RefuseFromTicket(int numberOfTicket);
         string ToString();
 

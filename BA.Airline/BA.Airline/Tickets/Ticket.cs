@@ -27,7 +27,7 @@ namespace BA.Airline.Tickets
                 else _price = value;
             }
         }
-        public int NumberofSeat { get; set; }
+        public int NumberOfSeat { get; set; }
         IPassenger _passenger = null;
         public IPassenger Passenger { get; set; }
 
@@ -56,7 +56,7 @@ namespace BA.Airline.Tickets
             NumberOfTicket = numberOfTicket;
             ClassOfSeat = seatClass;
             Price = price;
-            NumberofSeat = numberOfSeat;
+            NumberOfSeat = numberOfSeat;
         }
     }
 }
