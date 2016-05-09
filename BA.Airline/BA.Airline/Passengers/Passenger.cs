@@ -20,9 +20,10 @@ namespace BA.Airline.Passengers
 
 
         public override string ToString() {
-            string s = $"Name:{Firstname};\nLastname:{Lastname};\nNationality{Nationality}:\nNumber of passport:{NumberOfPassport};\nBirthday:{Birthday.ToString("dd-MM-yyyy")};\nSex:{Sex.ToString()}";
-            return s;
+            return String.Format("    |{0,-14}|{1,-16}|{2,-10}|{3,-8}|{4,7}|{5,-11}|", Firstname,
+                   Lastname, Birthday.ToString("dd-MM-yyyy"), NumberOfPassport, Sex, Nationality);
         }
+        public Passenger() { }
         public Passenger(string firstname, string lastname, string nationality, string numberOfPassport,
             DateTime birthday, Sex sex) {
             Firstname = firstname;
@@ -31,6 +32,7 @@ namespace BA.Airline.Passengers
             NumberOfPassport = numberOfPassport;
             Birthday = birthday;
             Sex = sex;
+            
         }
     }
 }

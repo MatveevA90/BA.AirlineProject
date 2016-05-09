@@ -43,11 +43,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Flights\Comparers\PriceComparer.cs" />
     <Compile Include="Flights\Flight.cs" />
     <Compile Include="Flights\IFlight.cs" />
+    <Compile Include="Flights\Comparers\FlightNumberComparer.cs" />
     <Compile Include="Passengers\IPassenger.cs" />
     <Compile Include="Passengers\Passenger.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="ProgramLogic\AddFLightClass.cs" />
+    <Compile Include="ProgramLogic\EditFlightClass.cs" />
+    <Compile Include="ProgramLogic\MainMenu.cs" />
+    <Compile Include="ProgramLogic\PassengerManu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tickets\ITicket.cs" />
     <Compile Include="Tickets\Ticket.cs" />

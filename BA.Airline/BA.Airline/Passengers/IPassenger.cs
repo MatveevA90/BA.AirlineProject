@@ -13,6 +13,7 @@ namespace BA.Airline.Passengers
         string Lastname { get; set; }
         string NumberOfPassport { get; set; }
         string ToString();
+        
       
     }
 }

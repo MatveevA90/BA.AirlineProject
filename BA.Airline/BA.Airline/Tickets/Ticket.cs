@@ -14,7 +14,12 @@ namespace BA.Airline.Tickets
         public IFlight Flight { get; set; }
 
 
-        public int NumberOfTicket { get; set; }
+        public string NumberOfTicket {
+            get
+            {
+                return (Flight.FlightNumber.ToString("D4") + "." + NumberOfSeat.ToString("D4"));
+            }
+        }
         SeatClass _seatClass;
         public SeatClass ClassOfSeat { get; set; }
         decimal _price;
@@ -41,6 +46,13 @@ namespace BA.Airline.Tickets
             Console.WriteLine($"Number of ticket: {Flight.FlightNumber.ToString()}.{NumberOfTicket}");
             Console.WriteLine($"Class:{ClassOfSeat.ToString()}");
             Console.WriteLine($"Price:{Price.ToString()}");
+            if (this.Passenger != null)
+            {
+                Console.WriteLine($"Name: {Passenger.Firstname}");
+                Console.WriteLine($"Lastname: {Passenger.Lastname}");
+                Console.WriteLine($"Number of passport: {Passenger.NumberOfPassport}");
+                Console.WriteLine($"---------------------------------------------");
+            }
         }
 
         public void RefuseFromTicket() {
@@ -51,9 +63,11 @@ namespace BA.Airline.Tickets
             return Passenger;
         }
 
-        public Ticket(IFlight flight, int numberOfTicket, SeatClass seatClass, decimal price, int numberOfSeat) {
+       
+
+        public Ticket(IFlight flight,  SeatClass seatClass, decimal price, int numberOfSeat) {
             Flight = flight;
-            NumberOfTicket = numberOfTicket;
+           
             ClassOfSeat = seatClass;
             Price = price;
             NumberOfSeat = numberOfSeat;

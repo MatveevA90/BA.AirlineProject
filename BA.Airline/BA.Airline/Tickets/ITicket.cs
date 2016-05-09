@@ -13,7 +13,7 @@ namespace BA.Airline.Tickets
         IPassenger Passenger { get; set; }
         decimal Price { get; set; }
         SeatClass ClassOfSeat { get; set; }
-        int NumberOfTicket { get; set; }
+        string NumberOfTicket { get; }
         int NumberOfSeat { get; set; }
         void PrintTicket();
         void BuyTicket(IPassenger passenger);

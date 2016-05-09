@@ -1,18 +1,20 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BA.Airline.Passengers;
 using BA.Airline.Tickets;
+using BA.Airline.Flights.Comparers;
 
 namespace BA.Airline.Flights
 {
     public enum Status
     {
-        ChekIn = 1, GateClosed, Arrived, DepartedAt, Unknown, Canceled, ExpectedAt, Delayed, InFlight
+        ChekIn = 1, GateClosed, Unknown, Canceled, ExpectedAt, Delayed, InFlight
     }
-    public enum ArrivedDeparted { Arrived = 1, Departed }
+    public enum DirectionForFlight { Arrived = 1, Departed }
     public sealed class Flight : IFlight
     {
         private DateTime _arrivalDeparted;
@@ -21,9 +23,9 @@ namespace BA.Airline.Flights
         private int _gate;
         private int flightNumber;
 
-        public ArrivedDeparted ArrivedDeparted { get; set; }
+        public DirectionForFlight DirectionForFlight { get; set; }
         public ITicket[] TicketsOfFlight { get; set; }
-        public DateTime ArrivalDeparting
+        public DateTime FlightDate
         {
             get { return _arrivalDeparted; }
             set
@@ -70,6 +72,21 @@ namespace BA.Airline.Flights
         }
         public int NumberOfBusinessSeats { get; set; }
         public int NumberOfEconomySeats { get; set; }
+        public int FreeSeats
+        {
+            get
+            {
+                int counter = 0;
+                foreach (var ticket in TicketsOfFlight)
+                {
+                    if (ticket.Passenger == null)
+                        counter++;
+                }
+                return counter;
+            }
+        }
+
+
         public IFlight DeletFlight(int flightNumber) {
             if (this.FlightNumber == flightNumber)
                 return null;
@@ -77,11 +94,11 @@ namespace BA.Airline.Flights
                 return this;
         }
 
-        public void EditFlightArrivedDepartedStatus(int arrivedDepartedStatus) {
-            ArrivedDeparted = (ArrivedDeparted)arrivedDepartedStatus;
+        public void EditDirectionForFlight(int directionForFlight) {
+            DirectionForFlight = (DirectionForFlight)directionForFlight;
         }
         public void EditFlightCity(string city) => City = city;
-        public void EditFlightNumber(int flightNUmber) => FlightNumber = flightNumber;
+        public void EditFlightNumber(int flightNumber) => FlightNumber = this.flightNumber;
         public void EditFlightStatus(int status) => FlightStatus = (Status)status;
         public void EditFlightNumberOfBusinessSeats(int numberOfSeats) {
             int i = 0;
@@ -105,7 +122,7 @@ namespace BA.Airline.Flights
             if (i <= numberOfSeats)
                 NumberOfEconomySeats = numberOfSeats;
         }
-        public void EditFlightArrivalDeparting(DateTime dateTime) => ArrivalDeparting = dateTime;
+        public void EditFlightArrivalDeparting(DateTime dateTime) => FlightDate = dateTime;
         public void EditFlightTerminal(int terminal) => Terminal = terminal;
         public void EditFlightGate(int gate) => Gate = gate;
         public void EditFlightPriceOfBussinesSeat(decimal price) {
@@ -126,15 +143,12 @@ namespace BA.Airline.Flights
         }
 
         public IFlight SearchByCost(decimal money) {
-            for (int i = 0; i < TicketsOfFlight.Length; i++)
+
+            if (this.PriceForEconomy <= money)
             {
-                if (TicketsOfFlight[i].ClassOfSeat == (SeatClass)0)
-                    if (TicketsOfFlight[i].Price < money)
-                    {
-                        return this;
-                    }
-            }
-            return null;
+                return this;
+            } else
+                return null;
         }
 
         public IFlight SearchByNumber(int numberOfFlight) {
@@ -156,7 +170,7 @@ namespace BA.Airline.Flights
 
             return passengers;
         }
-       
+
         public ITicket BuyTicket(IPassenger passenger, int numberOfSeat) {
             //ITicket[] freeSeats = new ITicket[TicketsOfFlight.Length];
             //for (int i = 0; i < TicketsOfFlight.Length; i++)
@@ -170,10 +184,13 @@ namespace BA.Airline.Flights
             //}
             foreach (var freeTicket in TicketsOfFlight)
             {
-                if (freeTicket.NumberOfSeat == numberOfSeat)
+                if (freeTicket.Passenger == null)
                 {
-                    freeTicket.BuyTicket(passenger);
-                    return freeTicket;
+                    if (freeTicket.NumberOfSeat == numberOfSeat)
+                    {
+                        freeTicket.BuyTicket(passenger);
+                        return freeTicket;
+                    }
                 }
             }
             return null;
@@ -190,13 +207,24 @@ namespace BA.Airline.Flights
                     {
                         passengers[i] = ticket.Passenger;
                         i++;
-                    } else if (ticket.Passenger.Lastname.Contains(name)){
+                    } else if (ticket.Passenger.Lastname.Contains(name))
+                    {
                         passengers[i] = ticket.Passenger;
                         i++;
                     }
                 }
             }
             return passengers;
+        }
+
+        public IPassenger SearchByNumberOfTicket(string numberOfTicket) {
+            foreach (var ticket in TicketsOfFlight)
+            {
+                if (ticket.Passenger != null)
+                    if (ticket.NumberOfTicket.Equals(numberOfTicket))
+                        return ticket.Passenger;
+            }
+            return null;
         }
 
         public IPassenger SearchByPassport(string numberOfPassport) {
@@ -209,11 +237,11 @@ namespace BA.Airline.Flights
             return null;
         }
 
-        public ITicket RefuseFromTicket(int numberOfTicket) {
+        public ITicket RefuseFromTicket(string numberOfTicket, IPassenger passenger) {
             foreach (var ticket in TicketsOfFlight)
             {
-                if (ticket.Passenger != null)
-                    if (ticket.NumberOfTicket == numberOfTicket)
+                if (ticket.Passenger != null && ticket.Passenger.NumberOfPassport.Equals(passenger.NumberOfPassport))
+                    if (ticket.NumberOfTicket.Equals(numberOfTicket))
                     {
                         ticket.RefuseFromTicket();
                         return ticket;
@@ -222,13 +250,30 @@ namespace BA.Airline.Flights
             return null;
         }
 
+        public int CompareTo(object obj) {
+            Flight temp = obj as Flight;
+            if (temp != null)
+                return this.FlightDate.CompareTo(temp.FlightDate);
+            else
+                throw new ArgumentException();
+        }
+
+        public override string ToString() {
+            return String.Format("|{0,-9}|{1,-16}|{2,-6}|{3,-15}|{4,11}/{5}|{6,-10}|{7,11}|", DirectionForFlight,
+                   FlightDate.ToString("dd-MM-yyyy hh:mm"), FlightNumber, City, Terminal, Gate,
+                   FlightStatus, FreeSeats);
+        }
+
+
+
         public Flight() { }
-        public Flight(string city, int numberOfFlight, int status, DateTime arrivalDepartedTime,
-            int terminal, int gate, int numberOfBusinessSeats = 0, int numberOfEconomySeats = 0, decimal priceForBusiness = 0, decimal priceForEconomy = 0) {
+        public Flight(string city, int numberOfFlight, int status,int directionForFlight, DateTime arrivalDepartedTime,
+            int terminal, int gate, int numberOfBusinessSeats, int numberOfEconomySeats, decimal priceForBusiness, decimal priceForEconomy) {
             City = city;
             FlightNumber = numberOfFlight;
+            DirectionForFlight = (DirectionForFlight)directionForFlight;
             FlightStatus = (Status)status;
-            ArrivalDeparting = arrivalDepartedTime;
+            FlightDate = arrivalDepartedTime;
             Terminal = terminal;
             Gate = gate;
             PriceForEconomy = priceForEconomy;
@@ -238,11 +283,11 @@ namespace BA.Airline.Flights
             TicketsOfFlight = new ITicket[(numberOfEconomySeats + NumberOfBusinessSeats)];
             for (int i = 0; i < NumberOfBusinessSeats; i++)
             {
-                TicketsOfFlight[i] = new Ticket(this, i + 1, (SeatClass)1, PriceForBusiness, i + 1);
+                TicketsOfFlight[i] = new Ticket(this, (SeatClass)1, PriceForBusiness, i + 1);
             }
             for (int i = NumberOfBusinessSeats; i < TicketsOfFlight.Length; i++)
             {
-                TicketsOfFlight[i] = new Ticket(this, i + 1, (SeatClass)2, PriceForEconomy, i + 1);
+                TicketsOfFlight[i] = new Ticket(this, (SeatClass)2, PriceForEconomy, i + 1);
             }
         }
     }
